@@ -162,7 +162,6 @@ def normalize_header(header_string):
 def normalize_header(header_string):
     """Removes spaces, underscores, punctuation, makes lowercase for flexible matching."""
     return re.sub(r'[^a-zA-Z0-9]', '', str(header_string)).lower()
-
 def map_country(val):
     """Maps Facebook fields to target format, with aggressive fallback logic."""
     if pd.isna(val) or str(val).strip() == '':
