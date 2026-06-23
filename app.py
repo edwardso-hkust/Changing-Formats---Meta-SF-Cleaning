@@ -164,27 +164,37 @@ def normalize_header(header_string):
     return re.sub(r'[^a-zA-Z0-9]', '', str(header_string)).lower()
 
 def map_country(val):
-    """Maps Facebook fields to target format, with underscore cleanup and fallback logic."""
+    """Maps Facebook fields to target format, with aggressive fallback logic."""
     if pd.isna(val) or str(val).strip() == '':
         return val
         
-    # 1. Clean the string: replace '_' with ' ', make uppercase, strip whitespace
-    val_clean = str(val).replace('_', ' ').strip().upper()
+    # 1. Clean the string: uppercase, fix underscores and weird dashes
+    val_clean = str(val).upper().replace('_', ' ').replace('–', '-').strip()
     
-    # 2. Check for an exact direct match (handles standard 2-letter codes & full names)
-    if val_clean in MASTER_COUNTRY_MAPPING:
-        return MASTER_COUNTRY_MAPPING[val_clean]
+    # 2. Check for an exact 2-letter code or Full Name match
+    if val_clean in COUNTRY_MAPPING:
+        return COUNTRY_MAPPING[val_clean]
         
-    # 3. Fallback: If formatted like "HONG KONG SAR - HK", extract the last 2 letters
+    # 3. SMART OVERRIDES: Catch messy Facebook formats by checking for keywords
+    if 'HONG KONG' in val_clean:
+        return 'Hong Kong, China - HKG'
+    if 'MACAO' in val_clean or 'MACAU' in val_clean:
+        return 'Macao - MAC'
+    if 'TAIWAN' in val_clean:
+        return 'Taiwan - TWN'
+    if 'KOREA' in val_clean and 'SOUTH' in val_clean:
+        return 'Korea, Republic of - KOR'
+        
+    # 4. Fallback 1: If formatted like "ANYTHING - XX", extract the 2-letter code "XX"
     if '-' in val_clean:
         parts = val_clean.split('-')
-        potential_code = parts[-1].strip()  # Extracts "HK"
-        if len(potential_code) == 2 and potential_code in MASTER_COUNTRY_MAPPING:
-            return MASTER_COUNTRY_MAPPING[potential_code]
+        potential_code = parts[-1].strip()
+        if len(potential_code) == 2 and potential_code in COUNTRY_MAPPING:
+            return COUNTRY_MAPPING[potential_code]
             
-    # 4. If no match is found, just return the cleaned string with spaces instead of underscores
+    # 5. Fallback 2: If no map is found, return the string with spaces instead of underscores
     return str(val).replace('_', ' ').strip()
-
+    
 def clean_phone(val):
     """Strips all non-numeric characters."""
     if pd.isna(val):
