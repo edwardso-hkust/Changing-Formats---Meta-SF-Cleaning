@@ -171,7 +171,12 @@ def map_country(val):
     if val_clean in MASTER_COUNTRY_MAPPING:
         return MASTER_COUNTRY_MAPPING[val_clean]
         
-    # 3. SMART OVERRIDES: Catch messy Facebook formats by checking for keywords
+    # 3. SNAP-BACK FORMATTING: If it already looks like "MALAYSIA - MYS" but has bad capitalization
+    valid_outputs = {v.upper(): v for v in MASTER_COUNTRY_MAPPING.values()}
+    if val_clean in valid_outputs:
+        return valid_outputs[val_clean]
+        
+    # 4. SMART OVERRIDES: Catch messy Facebook formats by checking for keywords
     if 'HONG KONG' in val_clean:
         return 'Hong Kong, China - HKG'
     if 'MACAO' in val_clean or 'MACAU' in val_clean:
@@ -181,14 +186,22 @@ def map_country(val):
     if 'KOREA' in val_clean and 'SOUTH' in val_clean:
         return 'Korea, Republic of - KOR'
         
-    # 4. Fallback 1: If formatted like "ANYTHING - XX", extract the 2-letter code "XX"
+    # 5. Fallback 1: Extract 2-letter OR 3-letter code after a dash
     if '-' in val_clean:
         parts = val_clean.split('-')
         potential_code = parts[-1].strip()
+        
+        # Check if it's a 2-letter code
         if len(potential_code) == 2 and potential_code in MASTER_COUNTRY_MAPPING:
             return MASTER_COUNTRY_MAPPING[potential_code]
             
-    # 5. Fallback 2: If no map is found, return the string with spaces instead of underscores
+        # Check if it's a 3-letter code (like MYS or GBR)
+        if len(potential_code) == 3:
+            for clean_out, proper_out in valid_outputs.items():
+                if clean_out.endswith(f"- {potential_code}"):
+                    return proper_out
+                    
+    # 6. Fallback 2: If no map is found at all, return the string with spaces
     return str(val).replace('_', ' ').strip()
     
 def clean_phone(val):
