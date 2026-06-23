@@ -228,9 +228,6 @@ def load_data(uploaded_file):
 # ==========================================
 # TASK 1: CLEANING FB LEAD FORM
 # ==========================================
-# ==========================================
-# TASK 1: CLEANING FB LEAD FORM
-# ==========================================
 def process_cleaning_fb(df):
     target_cols = [
         'created_time', 'form_name', 'first_name', 'last_name', 'email',
@@ -327,60 +324,6 @@ def process_sf_format(df, event_name, platform_link):
     df['Phone'] = df['Phone'].apply(clean_phone)
     
     # Apply Country mapping
-    df['Country'] = df['Country'].apply(map_country)
-    
-    df = df[final_order]
-    return df
-
-# ==========================================
-# TASK 2: SF FORMAT
-# ==========================================
-def process_sf_format(df, event_name, platform_link):
-    sf_mapping = {
-        'firstname': 'First Name',
-        'lastname': 'Last Name',
-        'email': 'Attendee Email',
-        'companyname': 'Company',
-        'phonenumber': 'Phone',
-        'workexperience': 'Work Experience',
-        'yearsofworkexperience': 'Work Experience',
-        'whichmbaprogramareyouinterestedin': 'Interested Program',
-        'whichregionareyoufrom': 'Country',
-        'country': 'Country', 
-        'jobtitle': 'Title on Badge',
-        'iwouldliketotalktoambaadvisor': 'Interested in Consultation'
-    }
-    
-    renamed = {}
-    for col in df.columns:
-        norm = normalize_header(col)
-        if norm in sf_mapping:
-            renamed[col] = sf_mapping[norm]
-            
-    df = df.rename(columns=renamed)
-    
-    final_order = [
-        'First Name', 'Last Name', 'Attendee Email', 'Company', 'Phone',
-        'Work Experience', 'Platform Link', 'Interested Program', 'Country',
-        'Title on Badge', 'Interested in Consultation', 'Event', 'Name on Badge'
-    ]
-    
-    for col in final_order:
-        if col not in df.columns:
-            df[col] = pd.NA
-            
-    df['Event'] = event_name
-    df['Platform Link'] = platform_link
-    df['Name on Badge'] = df['First Name'].fillna('') + ' ' + df['Last Name'].fillna('')
-    df['Name on Badge'] = df['Name on Badge'].str.strip()
-    
-    skip_underscore = ['Attendee Email', 'Platform Link']
-    for col in df.columns:
-        if col not in skip_underscore and df[col].dtype == 'object':
-            df[col] = df[col].apply(lambda x: str(x).replace('_', ' ') if pd.notna(x) else x)
-            df[col] = df[col].apply(lambda x: str(x).replace('part time mba (bi-weekly mode)', 'part time mba ( bi-weekly mode)') if pd.notna(x) else x)
-
-    df['Phone'] = df['Phone'].apply(clean_phone)
     df['Country'] = df['Country'].apply(map_country)
     
     df = df[final_order]
