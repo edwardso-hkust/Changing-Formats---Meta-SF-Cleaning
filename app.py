@@ -94,23 +94,18 @@ def clean_phone(val):
 
 def load_data(uploaded_file):
     """Robustly load CSV data by reading bytes directly, avoiding file-seek errors."""
-    import io
-    
-    # 1. Catch if the file drops out of memory
     if uploaded_file is None:
         raise ValueError("File lost from memory. Please re-attach the CSV.")
         
-    # 2. Extract the raw byte data directly
     raw_bytes = uploaded_file.getvalue()
     
     try:
-        # 3. First try reading as standard UTF-8
         text = raw_bytes.decode('utf-8')
         return pd.read_csv(io.StringIO(text), sep=None, engine='python', on_bad_lines='skip')
     except UnicodeDecodeError:
-        # 4. If it's a Meta/Facebook format, it's often UTF-16. Fallback safely!
         text = raw_bytes.decode('utf-16')
         return pd.read_csv(io.StringIO(text), sep=None, engine='python', on_bad_lines='skip')
+
 # ==========================================
 # TASK 1: CLEANING FB LEAD FORM
 # ==========================================
@@ -128,19 +123,17 @@ def process_cleaning_fb(df):
         norm = normalize_header(col)
         if norm in mapping:
             renamed[col] = mapping[norm]
-        elif norm == 'country': # Standard FB country field fallback
+        elif norm == 'country': 
             renamed[col] = 'which region are you from?'
             
     df = df.rename(columns=renamed)
     
-    # Ensure all columns exist
     for col in target_cols:
         if col not in df.columns:
             df[col] = pd.NA
             
     df = df[target_cols]
     
-    # Text Processing
     skip_underscore = ['email', 'linkedin_profile_link']
     for col in df.columns:
         if col not in skip_underscore and df[col].dtype == 'object':
@@ -149,11 +142,8 @@ def process_cleaning_fb(df):
     df['phone_number'] = df['phone_number'].apply(clean_phone)
     if 'created_time' in df.columns:
         df['created_time'] = df['created_time'].apply(lambda d: str(d).split('T')[0] if pd.notna(d) else d)
-        df = df.sort_values(by='created_time', ascending=True)
         
     df['which region are you from?'] = df['which region are you from?'].apply(map_country)
-    
-    # Drop completely blank columns
     df = df.dropna(axis=1, how='all')
     return df
 
@@ -161,7 +151,6 @@ def process_cleaning_fb(df):
 # TASK 2: SF FORMAT
 # ==========================================
 def process_sf_format(df, event_name, platform_link):
-    # Mapping FB headers -> SF Target Columns
     sf_mapping = {
         'firstname': 'First Name',
         'lastname': 'Last Name',
@@ -169,10 +158,10 @@ def process_sf_format(df, event_name, platform_link):
         'companyname': 'Company',
         'phonenumber': 'Phone',
         'workexperience': 'Work Experience',
-        'yearsofworkexperience': 'Work Experience', # fallback FB string
+        'yearsofworkexperience': 'Work Experience',
         'whichmbaprogramareyouinterestedin': 'Interested Program',
         'whichregionareyoufrom': 'Country',
-        'country': 'Country', # fallback FB string
+        'country': 'Country', 
         'jobtitle': 'Title on Badge',
         'iwouldliketotalktoambaadvisor': 'Interested in Consultation'
     }
@@ -191,30 +180,24 @@ def process_sf_format(df, event_name, platform_link):
         'Title on Badge', 'Interested in Consultation', 'Event', 'Name on Badge'
     ]
     
-    # Ensure all required columns exist before processing
     for col in final_order:
         if col not in df.columns:
             df[col] = pd.NA
             
-    # Derive new columns
     df['Event'] = event_name
     df['Platform Link'] = platform_link
     df['Name on Badge'] = df['First Name'].fillna('') + ' ' + df['Last Name'].fillna('')
     df['Name on Badge'] = df['Name on Badge'].str.strip()
     
-    # Underscore & Specific Text Logic
     skip_underscore = ['Attendee Email', 'Platform Link']
     for col in df.columns:
         if col not in skip_underscore and df[col].dtype == 'object':
             df[col] = df[col].apply(lambda x: str(x).replace('_', ' ') if pd.notna(x) else x)
-            # Apply exact string match for part time MBA
             df[col] = df[col].apply(lambda x: str(x).replace('part time mba (bi-weekly mode)', 'part time mba ( bi-weekly mode)') if pd.notna(x) else x)
 
-    # Phone Clean and Country Map
     df['Phone'] = df['Phone'].apply(clean_phone)
     df['Country'] = df['Country'].apply(map_country)
     
-    # Enforce strict column order
     df = df[final_order]
     return df
 
@@ -224,15 +207,13 @@ def process_sf_format(df, event_name, platform_link):
 st.set_page_config(page_title="Meta Lead Converter", layout="centered")
 
 st.title("📊 Meta Lead Data Processor")
-st.write("Upload your raw Meta/Facebook CSV file, choose your processing task, and download the standardized output.")
+st.write("Upload your raw Meta/Facebook CSV file(s), choose your processing task, and download the standardized output.")
 
-# 1. Select the task
 task = st.radio("Select Processing Mode:", ("Cleaning FB Lead Form", "Changing FB Lead Form to SF Format"))
 
-# 2. Upload file
-uploaded_file = st.file_uploader("Upload Raw Data CSV", type=['csv'])
+# UPDATED: accept_multiple_files=True added here
+uploaded_files = st.file_uploader("Upload Raw Data CSV(s)", type=['csv'], accept_multiple_files=True)
 
-# 3. Extra Inputs for Task 2
 event_name = ""
 platform_link = ""
 if task == "Changing FB Lead Form to SF Format":
@@ -240,32 +221,44 @@ if task == "Changing FB Lead Form to SF Format":
     event_name = st.text_input("Event Name", placeholder="e.g., Summer MBA Fair 2026")
     platform_link = st.text_input("Platform Link", placeholder="https://zoom.us/j/12345...")
 
-# 4. Processing Button
 if st.button("Process Data"):
-    if uploaded_file is None:
-        st.warning("⚠️ Please upload a CSV file first.")
+    # UPDATED: Checking if the list is empty
+    if not uploaded_files:
+        st.warning("⚠️ Please upload at least one CSV file first.")
     elif task == "Changing FB Lead Form to SF Format" and (not event_name or not platform_link):
         st.warning("⚠️ Please fill in both the Event Name and Platform Link.")
     else:
         try:
-            with st.spinner("Processing data..."):
-                raw_df = load_data(uploaded_file)
+            with st.spinner(f"Processing {len(uploaded_files)} file(s)..."):
                 
-                if task == "Cleaning FB Lead Form":
-                    processed_df = process_cleaning_fb(raw_df)
-                    file_name = "Cleaned_FB_Leads.csv"
-                else:
-                    processed_df = process_sf_format(raw_df, event_name, platform_link)
-                    file_name = "SF_Formatted_Leads.csv"
+                # UPDATED: Loop through all files and store the processed dataframes in a list
+                processed_dfs = []
+                for file in uploaded_files:
+                    raw_df = load_data(file)
+                    
+                    if task == "Cleaning FB Lead Form":
+                        processed_df = process_cleaning_fb(raw_df)
+                    else:
+                        processed_df = process_sf_format(raw_df, event_name, platform_link)
+                        
+                    processed_dfs.append(processed_df)
                 
-                st.success("✅ Data processed successfully!")
-                st.dataframe(processed_df.head(10)) # Show preview
+                # UPDATED: Combine all processed files into one master dataframe
+                master_df = pd.concat(processed_dfs, ignore_index=True)
                 
-                # Convert DF to CSV with UTF-8 BOM encoding for correct Excel rendering
-                csv_data = processed_df.to_csv(index=False).encode('utf-8-sig')
+                # Optional sorting for task 1 (since we combined multiple files)
+                if task == "Cleaning FB Lead Form" and 'created_time' in master_df.columns:
+                     master_df = master_df.sort_values(by='created_time', ascending=True)
+
+                file_name = "Cleaned_FB_Leads_Combined.csv" if task == "Cleaning FB Lead Form" else "SF_Formatted_Leads_Combined.csv"
+                
+                st.success("✅ Data combined and processed successfully!")
+                st.dataframe(master_df.head(10)) 
+                
+                csv_data = master_df.to_csv(index=False).encode('utf-8-sig')
                 
                 st.download_button(
-                    label="📥 Download Output CSV",
+                    label=f"📥 Download Combined Output CSV ({len(uploaded_files)} files)",
                     data=csv_data,
                     file_name=file_name,
                     mime="text/csv"
