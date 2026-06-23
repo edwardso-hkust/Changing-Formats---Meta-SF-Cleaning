@@ -205,9 +205,15 @@ def map_country(val):
     return str(val).replace('_', ' ').strip()
     
 def clean_phone(val):
-    """Strips all non-numeric characters and forces Excel to read as Text."""
+    """Strips all non-numeric characters and returns a pure string of digits."""
     if pd.isna(val) or str(val).strip() == '':
         return pd.NA
+        
+    # Strip everything except digits
+    cleaned = re.sub(r'\D', '', str(val))
+    
+    # Return the pure string of numbers (no apostrophe!)
+    return cleaned if cleaned else pd.NA
         
     # 1. Strip everything except digits
     cleaned = re.sub(r'\D', '', str(val))
