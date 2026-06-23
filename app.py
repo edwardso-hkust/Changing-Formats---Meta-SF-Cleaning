@@ -159,9 +159,6 @@ def normalize_header(header_string):
     """Removes spaces, underscores, punctuation, makes lowercase for flexible matching."""
     return re.sub(r'[^a-zA-Z0-9]', '', str(header_string)).lower()
 
-def normalize_header(header_string):
-    """Removes spaces, underscores, punctuation, makes lowercase for flexible matching."""
-    return re.sub(r'[^a-zA-Z0-9]', '', str(header_string)).lower()
 def map_country(val):
     """Maps Facebook fields to target format, with aggressive fallback logic."""
     if pd.isna(val) or str(val).strip() == '':
@@ -171,8 +168,8 @@ def map_country(val):
     val_clean = str(val).upper().replace('_', ' ').replace('–', '-').strip()
     
     # 2. Check for an exact 2-letter code or Full Name match
-    if val_clean in COUNTRY_MAPPING:
-        return COUNTRY_MAPPING[val_clean]
+    if val_clean in MASTER_COUNTRY_MAPPING:
+        return MASTER_COUNTRY_MAPPING[val_clean]
         
     # 3. SMART OVERRIDES: Catch messy Facebook formats by checking for keywords
     if 'HONG KONG' in val_clean:
@@ -188,8 +185,8 @@ def map_country(val):
     if '-' in val_clean:
         parts = val_clean.split('-')
         potential_code = parts[-1].strip()
-        if len(potential_code) == 2 and potential_code in COUNTRY_MAPPING:
-            return COUNTRY_MAPPING[potential_code]
+        if len(potential_code) == 2 and potential_code in MASTER_COUNTRY_MAPPING:
+            return MASTER_COUNTRY_MAPPING[potential_code]
             
     # 5. Fallback 2: If no map is found, return the string with spaces instead of underscores
     return str(val).replace('_', ' ').strip()
