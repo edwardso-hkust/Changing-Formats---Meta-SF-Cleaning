@@ -4,9 +4,10 @@ import re
 import io
 
 # ==========================================
-# MASTER COUNTRY DICTIONARY
+# MASTER COUNTRY DICTIONARY (Codes & Full Names)
 # ==========================================
-COUNTRY_MAPPING = {
+MASTER_COUNTRY_MAPPING = {
+    # 2-Letter ISO Codes
     'AD': 'Andorra - AND', 'AE': 'U.A.E. - ARE', 'AF': 'Afghanistan - AFG', 'AG': 'Antigua and Barbuda - ATG',
     'AI': 'Anguilla - AIA', 'AL': 'Albania - ALB', 'AM': 'Armenia - ARM', 'AO': 'Angola - AGO',
     'AQ': 'Antarctica - ATA', 'AR': 'Argentina - ARG', 'AS': 'American Samoa - ASM', 'AT': 'Austria - AUT',
@@ -68,7 +69,87 @@ COUNTRY_MAPPING = {
     'VE': 'Venezuela - VEN', 'VG': 'Virgin Islands, British - VGB', 'VI': 'Virgin Islands, U.S. - VIR',
     'VN': 'Vietnam - VNM', 'VU': 'Vanuatu - VUT', 'WF': 'Wallis and Futuna - WLF', 'WS': 'Samoa - WSM',
     'YE': 'Yemen - YEM', 'YT': 'Mayotte - MYT', 'ZA': 'South Africa - ZAF', 'ZM': 'Zambia - ZMB',
-    'ZW': 'Zimbabwe - ZWE'
+    'ZW': 'Zimbabwe - ZWE',
+    
+    # Full Names / Extended Variations (Uppercase)
+    'AALAND ISLANDS': 'Åland Islands - ALA', 'AFGHANISTAN': 'Afghanistan - AFG', 'ALBANIA': 'Albania - ALB',
+    'ALGERIA': 'Algeria - DZA', 'AMERICAN SAMOA': 'American Samoa - ASM', 'ANDORRA': 'Andorra - AND',
+    'ANGOLA': 'Angola - AGO', 'ANGUILLA': 'Anguilla - AIA', 'ANTARCTICA': 'Antarctica - ATA',
+    'ANTIGUA AND BARBUDA': 'Antigua and Barbuda - ATG', 'ARGENTINA': 'Argentina - ARG', 'ARMENIA': 'Armenia - ARM',
+    'ARUBA': 'Aruba - ABW', 'AUSTRALIA': 'Australia - AUS', 'AUSTRIA': 'Austria - AUT', 'AZERBAIJAN': 'Azerbaijan - AZE',
+    'BAHAMAS': 'Bahamas - BHS', 'BAHRAIN': 'Bahrain - BHR', 'BANGLADESH': 'Bangladesh - BGD', 'BARBADOS': 'Barbados - BRB',
+    'BELARUS': 'Belarus - BLR', 'BELGIUM': 'Belgium - BEL', 'BELIZE': 'Belize - BLZ', 'BENIN': 'Benin - BEN',
+    'BERMUDA': 'Bermuda - BMU', 'BHUTAN': 'Bhutan - BTN', 'BOLIVIA': 'Bolivia - BOL', 'BOSNIA': 'Bosnia - BIH',
+    'BOTSWANA': 'Botswana - BWA', 'BOUVET ISLAND': 'Bouvet Island - BVT', 'BRAZIL': 'Brazil - BRA',
+    'BRITISH INDIAN OCEAN TERRITORY': 'British Indian Ocean Territory - IOT', 'BRUNEI': 'Brunei - BRN',
+    'BULGARIA': 'Bulgaria - BGR', 'BURKINA FASO': 'Burkina Faso - BFA', 'BURUNDI': 'Burundi - BDI',
+    'CAMBODIA': 'Cambodia - KHM', 'CAMEROON': 'Cameroon - CMR', 'CANADA': 'Canada - CAN', 'CAPE VERDE': 'Cape Verde - CPV',
+    'CAYMAN ISLANDS': 'Cayman Islands - CYM', 'CENTRAL AFRICAN REPUBLIC': 'Central African Republic - CAF',
+    'CHAD': 'Chad - TCD', 'CHILE': 'Chile - CHL', 'CHINA': 'Chinese Mainland - CHN',
+    'CHRISTMAS ISLAND': 'Christmas Island - CXR', 'COCOS (KEELING) ISLANDS': 'Cocos Islands - CCK',
+    'COLOMBIA': 'Colombia - COL', 'COMOROS': 'Comoros - COM', 'CONGO, DEM. REP.': 'Congo, Dem. Rep. - COD',
+    'CONGO': 'Congo - COG', 'COOK ISLANDS': 'Cook Islands - COK', 'COSTA RICA': 'Costa Rica - CRI',
+    'CROATIA': 'Croatia - HRV', 'CUBA': 'Cuba - CUB', 'CURAÇAO': 'Curaçao - ANT', 'CYPRUS': 'Cyprus - CYP',
+    'CZECH REPUBLIC': 'Czech Republic - CZE', 'DENMARK': 'Denmark - DNK', 'DJIBOUTI': 'Djibouti - DJI',
+    'DOMINICA': 'Dominica - DMA', 'DOMINICAN REPUBLIC': 'Dominican Republic - DOM', 'ECUADOR': 'Ecuador - ECU',
+    'EGYPT': 'Egypt - EGY', 'EL SALVADOR': 'El Salvador - SLV', 'EQUATORIAL GUINEA': 'Equatorial Guinea - GNQ',
+    'ERITREA': 'Eritrea - ERI', 'ESTONIA': 'Estonia - EST', 'ETHIOPIA': 'Ethiopia - ETH',
+    'FALKLAND ISLANDS (MALVINAS)': 'Falkland Islands (Malvinas) - FLK', 'FAROE ISLANDS': 'Faroe Islands - FRO',
+    'FIJI': 'Fiji - FJI', 'FINLAND': 'Finland - FIN', 'FRANCE': 'France - FRA', 'FRENCH GUIANA': 'French Guiana - GUF',
+    'FRENCH POLYNESIA': 'French Polynesia - PYF', 'FRENCH SOUTHERN TERRITORIES': 'French Southern Territories - ATF',
+    'GABON': 'Gabon - GAB', 'GAMBIA': 'Gambia - GMB', 'GEORGIA': 'Georgia - GEO', 'GERMANY': 'Germany - DEU',
+    'GHANA': 'Ghana - GHA', 'GIBRALTAR': 'Gibraltar - GIB', 'GREECE': 'Greece - GRC', 'GREENLAND': 'Greenland - GRL',
+    'GRENADA': 'Grenada - GRD', 'GUADELOUPE': 'Guadeloupe - GLP', 'GUAM': 'Guam - GUM', 'GUATEMALA': 'Guatemala - GTM',
+    'GUERNSEY': 'Guernsey - GGY', 'GUINEA-BISSAU': 'Guinea-Bissau - GNB', 'GUINEA': 'Guinea - GIN', 'GUYANA': 'Guyana - GUY',
+    'HAITI': 'Haiti - HTI', 'HEARD ISLAND': 'Heard Island - HMD', 'HONDURAS': 'Honduras - HND',
+    'HONG KONG': 'Hong Kong, China - HKG', 'HONG KONG SAR': 'Hong Kong, China - HKG', 'HUNGARY': 'Hungary - HUN',
+    'ICELAND': 'Iceland - ISL', 'INDIA': 'India - IND', 'INDONESIA': 'Indonesia - IDN', 'IRAN': 'Iran - IRN',
+    'IRAQ': 'Iraq - IRQ', 'IRELAND': 'Ireland - IRL', 'ISLE OF MAN': 'Isle of Man - IMN', 'ISRAEL': 'Israel - ISR',
+    'ITALY': 'Italy - ITA', 'IVORY COAST': 'Ivory Coast - CIV', 'JAMAICA': 'Jamaica - JAM', 'JAPAN': 'Japan - JPN',
+    'JERSEY (CHANNEL ISLANDS)': 'Jersey - JEY', 'JORDAN': 'Jordan - JOR', 'KAZAKHSTAN': 'Kazakhstan - KAZ',
+    'KENYA': 'Kenya - KEN', 'KIRIBATI': 'Kiribati - KIR', "KOREA, DEMO PEOPLE'S REP OF": "Korea, Demo People's Rep of - PRK",
+    'KOREA, REPUBLIC OF': 'Korea, Republic of - KOR', 'SOUTH KOREA': 'Korea, Republic of - KOR', 'KUWAIT': 'Kuwait - KWT',
+    'KYRGYZSTAN': 'Kyrgyzstan - KGZ', 'LAOS': 'Laos - LAO', 'LATVIA': 'Latvia - LVA', 'LEBANON': 'Lebanon - LBN',
+    'LESOTHO': 'Lesotho - LSO', 'LIBERIA': 'Liberia - LBR', 'LIBYA': 'Libya - LBY', 'LIECHTENSTEIN': 'Liechtenstein - LIE',
+    'LITHUANIA': 'Lithuania - LTU', 'LUXEMBOURG': 'Luxembourg - LUX', 'MACAO': 'Macao - MAC', 'MACAU': 'Macao - MAC',
+    'MACEDONIA': 'Macedonia - MKD', 'MADAGASCAR': 'Madagascar - MDG', 'MALAWI': 'Malawi - MWI', 'MALAYSIA': 'Malaysia - MYS',
+    'MALDIVES': 'Maldives - MDV', 'MALI': 'Mali - MLI', 'MALTA': 'Malta - MLT', 'MARSHALL ISLANDS': 'Marshall Islands - MHL',
+    'MARTINIQUE': 'Martinique - MTQ', 'MAURITANIA': 'Mauritania - MRT', 'MAURITIUS': 'Mauritius - MUS',
+    'MAYOTTE': 'Mayotte - MYT', 'MEXICO': 'Mexico - MEX', 'MICRONESIA, FED.': 'Micronesia, Fed. - FSM',
+    'MOLDOVA': 'Moldova - MDA', 'MONACO': 'Monaco - MCO', 'MONGOLIA': 'Mongolia - MNG', 'MONTENEGRO': 'Montenegro - MNE',
+    'MONTSERRAT': 'Montserrat - MSR', 'MOROCCO': 'Morocco - MAR', 'MOZAMBIQUE': 'Mozambique - MOZ',
+    'MYANMAR': 'Myanmar - MMR', 'NAMIBIA': 'Namibia - NAM', 'NAURU': 'Nauru - NRU', 'NEPAL': 'Nepal - NPL',
+    'NETHERLANDS': 'Netherlands - NLD', 'NEW CALEDONIA': 'New Caledonia - NCL', 'NEW ZEALAND': 'New Zealand - NZL',
+    'NICARAGUA': 'Nicaragua - NIC', 'NIGERIA': 'Nigeria - NGA', 'NIGER': 'Niger - NER', 'NIUE': 'Niue - NIU',
+    'NORFOLK ISLAND': 'Norfolk Island - NFK', 'NORTHERN MARIANAS': 'Northern Marianas - MNP', 'NORWAY': 'Norway - NOR',
+    'OMAN': 'Oman - OMN', 'PAKISTAN': 'Pakistan - PAK', 'PALAU': 'Palau - PLW', 'PALESTINIAN TERR.': 'Palestinian Terr. - PSE',
+    'PANAMA': 'Panama - PAN', 'PAPUA NEW GUINEA': 'Papua New Guinea - PNG', 'PARAGUAY': 'Paraguay - PRY',
+    'PERU': 'Peru - PER', 'PHILIPPINES': 'Philippines - PHL', 'PITCAIRN': 'Pitcairn - PCN', 'POLAND': 'Poland - POL',
+    'PORTUGAL': 'Portugal - PRT', 'PUERTO RICO': 'Puerto Rico - PRI', 'QATAR': 'Qatar - QAT', 'RÉUNION': 'Réunion - REU',
+    'REUNION': 'Réunion - REU', 'ROMANIA': 'Romania - ROU', 'RUSSIA': 'Russia - RUS', 'RWANDA': 'Rwanda - RWA',
+    'SAINT BARTHÉLEMY': 'Saint Barthélemy - BLM', 'SAINT HELENA': 'Saint Helena - SHN',
+    'SAINT KITTS AND NEVIS': 'Saint Kitts and Nevis - KNA', 'SAINT LUCIA': 'Saint Lucia - LCA',
+    'SAINT MARTIN (FRENCH)': 'Saint Martin (French) - MAF', 'SAINT PIERRE AND MIQUELON': 'Saint Pierre and Miquelon - SPM',
+    'SAINT VINCENT': 'Saint Vincent - VCT', 'SAMOA': 'Samoa - WSM', 'SAN MARINO': 'San Marino - SMR',
+    'SAO TOME & PRINCIPE': 'Sao Tome & Principe - STP', 'SAUDI ARABIA': 'Saudi Arabia - SAU', 'SENEGAL': 'Senegal - SEN',
+    'SERBIA': 'Serbia - SRB', 'SEYCHELLES': 'Seychelles - SYC', 'SIERRA LEONE': 'Sierra Leone - SLE',
+    'SINGAPORE': 'Singapore - SGP', 'SINT MAARTEN (DUTCH)': 'Sint Maarten (Dutch) - ANT', 'SLOVAKIA': 'Slovakia - SVK',
+    'SLOVENIA': 'Slovenia - SVN', 'SOLOMON ISLANDS': 'Solomon Islands - SLB', 'SOMALIA': 'Somalia - SOM',
+    'SOUTH AFRICA': 'South Africa - ZAF', 'SOUTH GEORGIA AND THE SOUTH SANDWICH ISLANDS': 'South Georgia and the South Sandwich Islands - SGS',
+    'SOUTH SUDAN': 'South Sudan - SDN', 'SPAIN': 'Spain - ESP', 'SRI LANKA': 'Sri Lanka - LKA', 'SUDAN': 'Sudan - SDN',
+    'SURINAME': 'Suriname - SUR', 'SVALBARD': 'Svalbard - SJM', 'SWAZILAND': 'Swaziland - SWZ', 'SWEDEN': 'Sweden - SWE',
+    'SWITZERLAND': 'Switzerland - CHE', 'SYRIA': 'Syria - SYR', 'TAIWAN': 'Taiwan - TWN', 'TAJIKISTAN': 'Tajikistan - TJK',
+    'TANZANIA': 'Tanzania - TZA', 'THAILAND': 'Thailand - THA', 'TIMOR-LESTE': 'Timor-Leste - TLS', 'TOGO': 'Togo - TGO',
+    'TOKELAU': 'Tokelau - TKL', 'TONGA': 'Tonga - TON', 'TRINIDAD AND TOBAGO': 'Trinidad and Tobago - TTO',
+    'TUNISIA': 'Tunisia - TUN', 'TURKEY': 'Turkey - TUR', 'TURKMENISTAN': 'Turkmenistan - TKM',
+    'TURKS AND CAICOS': 'Turks and Caicos - TCA', 'TUVALU': 'Tuvalu - TUV', 'U.A.E.': 'U.A.E. - ARE',
+    'UNITED ARAB EMIRATES': 'U.A.E. - ARE', 'UGANDA': 'Uganda - UGA', 'UKRAINE': 'Ukraine - UKR',
+    'UNITED KINGDOM': 'United Kingdom - GBR', 'UNITED STATES MINOR OUTLYING ISLANDS': 'United States Minor Outlying Islands - UMI',
+    'UNITED STATES': 'United States - USA', 'URUGUAY': 'Uruguay - URY', 'UZBEKISTAN': 'Uzbekistan - UZB',
+    'VANUATU': 'Vanuatu - VUT', 'VATICAN CITY': 'Vatican City - VAT', 'VENEZUELA': 'Venezuela - VEN',
+    'VIET NAM': 'Vietnam - VNM', 'VIETNAM': 'Vietnam - VNM', 'VIRGIN ISLANDS, BRITISH': 'Virgin Islands, British - VGB',
+    'VIRGIN ISLANDS, U.S.': 'Virgin Islands, U.S. - VIR', 'WALLIS AND FUTUNA': 'Wallis and Futuna - WLF',
+    'WESTERN SAHARA': 'Western Sahara - ESH', 'YEMEN': 'Yemen - YEM', 'ZAMBIA': 'Zambia - ZMB', 'ZIMBABWE': 'Zimbabwe - ZWE'
 }
 
 # ==========================================
@@ -78,12 +159,31 @@ def normalize_header(header_string):
     """Removes spaces, underscores, punctuation, makes lowercase for flexible matching."""
     return re.sub(r'[^a-zA-Z0-9]', '', str(header_string)).lower()
 
+def normalize_header(header_string):
+    """Removes spaces, underscores, punctuation, makes lowercase for flexible matching."""
+    return re.sub(r'[^a-zA-Z0-9]', '', str(header_string)).lower()
+
 def map_country(val):
-    """Maps Facebook ISO codes to target custom format."""
+    """Maps Facebook fields to target format, with underscore cleanup and fallback logic."""
     if pd.isna(val) or str(val).strip() == '':
         return val
-    val = str(val).strip().upper()
-    return COUNTRY_MAPPING.get(val, val)
+        
+    # 1. Clean the string: replace '_' with ' ', make uppercase, strip whitespace
+    val_clean = str(val).replace('_', ' ').strip().upper()
+    
+    # 2. Check for an exact direct match (handles standard 2-letter codes & full names)
+    if val_clean in MASTER_COUNTRY_MAPPING:
+        return MASTER_COUNTRY_MAPPING[val_clean]
+        
+    # 3. Fallback: If formatted like "HONG KONG SAR - HK", extract the last 2 letters
+    if '-' in val_clean:
+        parts = val_clean.split('-')
+        potential_code = parts[-1].strip()  # Extracts "HK"
+        if len(potential_code) == 2 and potential_code in MASTER_COUNTRY_MAPPING:
+            return MASTER_COUNTRY_MAPPING[potential_code]
+            
+    # 4. If no match is found, just return the cleaned string with spaces instead of underscores
+    return str(val).replace('_', ' ').strip()
 
 def clean_phone(val):
     """Strips all non-numeric characters."""
