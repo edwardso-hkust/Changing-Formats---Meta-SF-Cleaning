@@ -205,25 +205,31 @@ def map_country(val):
     return str(val).replace('_', ' ').strip()
     
 def clean_phone(val):
-    """Strips all non-numeric characters."""
-    if pd.isna(val):
-        return val
+    """Strips all non-numeric characters and forces Excel to read as Text."""
+    if pd.isna(val) or str(val).strip() == '':
+        return pd.NA
+        
+    # 1. Strip everything except digits
     cleaned = re.sub(r'\D', '', str(val))
-    return cleaned if cleaned else pd.NA
+    
+    # 2. Prepend an apostrophe so Excel NEVER turns it into E+12. 
+    # (Excel hides this apostrophe visually, but it protects the number format!)
+    return f"'{cleaned}" if cleaned else pd.NA
 
 def load_data(uploaded_file):
-    """Robustly load CSV data by reading bytes directly, avoiding file-seek errors."""
+    """Robustly load CSV data, forcing all columns to be read as plain text."""
     if uploaded_file is None:
         raise ValueError("File lost from memory. Please re-attach the CSV.")
         
     raw_bytes = uploaded_file.getvalue()
     
+    # ADDED: dtype=str forces Pandas to never guess if a phone number is a math equation
     try:
         text = raw_bytes.decode('utf-8')
-        return pd.read_csv(io.StringIO(text), sep=None, engine='python', on_bad_lines='skip')
+        return pd.read_csv(io.StringIO(text), sep=None, engine='python', on_bad_lines='skip', dtype=str)
     except UnicodeDecodeError:
         text = raw_bytes.decode('utf-16')
-        return pd.read_csv(io.StringIO(text), sep=None, engine='python', on_bad_lines='skip')
+        return pd.read_csv(io.StringIO(text), sep=None, engine='python', on_bad_lines='skip', dtype=str)
 
 # ==========================================
 # TASK 1: CLEANING FB LEAD FORM
