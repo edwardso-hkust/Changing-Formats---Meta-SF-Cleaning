@@ -214,13 +214,6 @@ def clean_phone(val):
     
     # Return the pure string of numbers (no apostrophe!)
     return cleaned if cleaned else pd.NA
-        
-    # 1. Strip everything except digits
-    cleaned = re.sub(r'\D', '', str(val))
-    
-    # 2. Prepend an apostrophe so Excel NEVER turns it into E+12. 
-    # (Excel hides this apostrophe visually, but it protects the number format!)
-    return f"'{cleaned}" if cleaned else pd.NA
 
 def load_data(uploaded_file):
     """Robustly load CSV data, forcing all columns to be read as plain text."""
@@ -243,7 +236,7 @@ def load_data(uploaded_file):
 def process_cleaning_fb(df):
     target_cols = [
         'created_time', 'form_name', 'first_name', 'last_name', 'email',
-        'phone_number', 'work experience', 'job_title', 'company_name',
+        'phone_number', 'years_of_work_experience', 'work experience', 'job_title', 'company_name',
         'i would like to talk to a mba advisor', 'which region are you from?',
         'which mba program are you interested in?', 'linkedin_profile_link'
     ]
@@ -293,7 +286,7 @@ def process_sf_format(df, event_name, platform_link):
         'companyname': 'Company',
         'phonenumber': 'Phone',
         'workexperience': 'Work Experience',
-        'yearsofworkexperience': 'Work Experience',
+        'yearsofworkexperience': 'Years of Work Experience',
         'whichmbaprogramareyouinterestedin': 'Interested Program',
         'whichregionareyoufrom': 'Country',
         'country': 'Country', 
@@ -311,7 +304,7 @@ def process_sf_format(df, event_name, platform_link):
     
     final_order = [
         'First Name', 'Last Name', 'Attendee Email', 'Company', 'Phone',
-        'Work Experience', 'Platform Link', 'Interested Program', 'Country',
+        'Years of Work Experience', 'Work Experience', 'Platform Link', 'Interested Program', 'Country',
         'Title on Badge', 'Interested in Consultation', 'Event', 'Name on Badge'
     ]
     
