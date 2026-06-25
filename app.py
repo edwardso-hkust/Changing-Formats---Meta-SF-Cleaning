@@ -215,6 +215,39 @@ def clean_phone(val):
     # Return the pure string of numbers (no apostrophe!)
     return cleaned if cleaned else pd.NA
 
+def clean_job_title(val):
+    """Extracts a plausible job title by removing conversational words/company names and caps at 80 chars."""
+    if pd.isna(val) or str(val).strip() == '':
+        return pd.NA
+        
+    title = str(val).strip()
+    
+    # 1. Strip away common conversational filler often dumped into free-form fields
+    filler_patterns = [
+        r'(?i)^i am (a|an)\s+',
+        r'(?i)^currently (working as )?(a|an)\s+',
+        r'(?i)^working as (a|an)\s+',
+        r'(?i)^my (role|title) is\s+',
+        r'(?i)^(role|title):\s*'
+    ]
+    for pattern in filler_patterns:
+        title = re.sub(pattern, '', title).strip()
+        
+    # 2. Try to drop the company name if they included it, since SF has a separate "Company" column
+    # We split by ' at ', '@', '|', or '(' and keep whatever is before it
+    split_delimiters = [r'(?i)\s+at\s+', r'\s*@\s*', r'\s*\|\s*', r'\s*\(']
+    for delim in split_delimiters:
+        parts = re.split(delim, title)
+        if len(parts) > 1 and len(parts[0].strip()) > 0:
+            title = parts[0].strip()
+            break # Only apply the most prominent/first matched delimiter to avoid over-chopping
+            
+    # 3. Truncate to strictly 80 characters
+    if len(title) > 80:
+        title = title[:80].strip()
+        
+    return title if title else pd.NA
+
 def load_data(uploaded_file):
     """Robustly load CSV data, forcing all columns to be read as plain text."""
     if uploaded_file is None:
@@ -328,6 +361,9 @@ def process_sf_format(df, event_name, platform_link):
             df[col] = df[col].apply(lambda x: str(x).replace('_', ' ') if pd.notna(x) else x)
             # Re-apply the part-time MBA rule
             df[col] = df[col].apply(lambda x: str(x).replace('part time mba (bi-weekly mode)', 'part time mba ( bi-weekly mode)') if pd.notna(x) else x)
+
+    # Clean and smartly truncate the Title on Badge (80 chars max)
+    df['Title on Badge'] = df['Title on Badge'].apply(clean_job_title)
 
     # Phone numbers: Pure digits
     df['Phone'] = df['Phone'].apply(clean_phone)
