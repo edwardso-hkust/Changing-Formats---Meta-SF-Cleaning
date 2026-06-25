@@ -286,12 +286,11 @@ def process_sf_format(df, event_name, platform_link):
         'companyname': 'Company',
         'phonenumber': 'Phone',
         'workexperience': 'Work Experience',
-        'yearsofworkexperience': 'Years of Work Experience',
-        'whichmbaprogramareyouinterestedin': 'Interested Program',
+        'yearsofworkexperience': 'Work Experience', # Modified
         'whichregionareyoufrom': 'Country',
         'country': 'Country', 
-        'jobtitle': 'Title on Badge',
-        'iwouldliketotalktoambaadvisor': 'Interested in Consultation'
+        'jobtitle': 'Title on Badge'
+        # Removed interested programs and consultation columns
     }
     
     renamed = {}
@@ -302,10 +301,15 @@ def process_sf_format(df, event_name, platform_link):
             
     df = df.rename(columns=renamed)
     
+    # In case both "workexperience" and "yearsofworkexperience" columns exist in raw df, 
+    # dropping duplicates ensures pandas doesnt get confused by two 'Work Experience' columns
+    df = df.loc[:, ~df.columns.duplicated(keep='first')].copy()
+    
+    # Updated order (Removed "Years of Work Experience", "Interested Program", and "Interested in Consultation")
     final_order = [
         'First Name', 'Last Name', 'Attendee Email', 'Company', 'Phone',
-        'Years of Work Experience', 'Work Experience', 'Platform Link', 'Interested Program', 'Country',
-        'Title on Badge', 'Interested in Consultation', 'Event', 'Name on Badge'
+        'Work Experience', 'Platform Link', 'Country',
+        'Title on Badge', 'Event', 'Name on Badge'
     ]
     
     for col in final_order:
@@ -344,7 +348,7 @@ st.write("Upload your raw Meta/Facebook CSV file(s), choose your processing task
 
 task = st.radio("Select Processing Mode:", ("Cleaning FB Lead Form", "Changing FB Lead Form to SF Format"))
 
-# UPDATED: accept_multiple_files=True added here
+# accept_multiple_files=True added here
 uploaded_files = st.file_uploader("Upload Raw Data CSV(s)", type=['csv'], accept_multiple_files=True)
 
 event_name = ""
@@ -355,7 +359,7 @@ if task == "Changing FB Lead Form to SF Format":
     platform_link = st.text_input("Platform Link", placeholder="https://zoom.us/j/12345...")
 
 if st.button("Process Data"):
-    # UPDATED: Checking if the list is empty
+    # Checking if the list is empty
     if not uploaded_files:
         st.warning("⚠️ Please upload at least one CSV file first.")
     elif task == "Changing FB Lead Form to SF Format" and (not event_name or not platform_link):
@@ -364,7 +368,7 @@ if st.button("Process Data"):
         try:
             with st.spinner(f"Processing {len(uploaded_files)} file(s)..."):
                 
-                # UPDATED: Loop through all files and store the processed dataframes in a list
+                # Loop through all files and store the processed dataframes in a list
                 processed_dfs = []
                 for file in uploaded_files:
                     raw_df = load_data(file)
@@ -376,7 +380,7 @@ if st.button("Process Data"):
                         
                     processed_dfs.append(processed_df)
                 
-                # UPDATED: Combine all processed files into one master dataframe
+                # Combine all processed files into one master dataframe
                 master_df = pd.concat(processed_dfs, ignore_index=True)
                 
                 # Optional sorting for task 1 (since we combined multiple files)
