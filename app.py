@@ -304,7 +304,7 @@ def process_sf_format(df, event_name, platform_link):
     
     final_order = [
         'First Name', 'Last Name', 'Attendee Email', 'Company', 'Phone',
-        'Work Experience', 'Platform Link', 'Interested Program', 'Country',
+        'Years of Work Experience', 'Work Experience', 'Platform Link', 'Interested Program', 'Country',
         'Title on Badge', 'Interested in Consultation', 'Event', 'Name on Badge'
     ]
     
