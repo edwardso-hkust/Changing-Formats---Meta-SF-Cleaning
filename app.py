@@ -67,87 +67,7 @@ MASTER_COUNTRY_MAPPING = {
     'UG': 'Uganda - UGA', 'UM': 'United States Minor Outlying Islands - UMI', 'US': 'United States - USA',
     'UY': 'Uruguay - URY', 'UZ': 'Uzbekistan - UZB', 'VA': 'Vatican City - VAT', 'VC': 'Saint Vincent - VCT',
     'VE': 'Venezuela - VEN', 'VG': 'Virgin Islands, British - VGB', 'VI': 'Virgin Islands, U.S. - VIR',
-    'VN': 'Vietnam - VNM', 'VU': 'Vanuatu - VUT', 'WF': 'Wallis and Futuna - WLF', 'WS': 'Samoa - WSM',
-    'YE': 'Yemen - YEM', 'YT': 'Mayotte - MYT', 'ZA': 'South Africa - ZAF', 'ZM': 'Zambia - ZMB',
-    'ZW': 'Zimbabwe - ZWE',
-    
-    # Full Names / Extended Variations (Uppercase)
-    'AALAND ISLANDS': 'Åland Islands - ALA', 'AFGHANISTAN': 'Afghanistan - AFG', 'ALBANIA': 'Albania - ALB',
-    'ALGERIA': 'Algeria - DZA', 'AMERICAN SAMOA': 'American Samoa - ASM', 'ANDORRA': 'Andorra - AND',
-    'ANGOLA': 'Angola - AGO', 'ANGUILLA': 'Anguilla - AIA', 'ANTARCTICA': 'Antarctica - ATA',
-    'ANTIGUA AND BARBUDA': 'Antigua and Barbuda - ATG', 'ARGENTINA': 'Argentina - ARG', 'ARMENIA': 'Armenia - ARM',
-    'ARUBA': 'Aruba - ABW', 'AUSTRALIA': 'Australia - AUS', 'AUSTRIA': 'Austria - AUT', 'AZERBAIJAN': 'Azerbaijan - AZE',
-    'BAHAMAS': 'Bahamas - BHS', 'BAHRAIN': 'Bahrain - BHR', 'BANGLADESH': 'Bangladesh - BGD', 'BARBADOS': 'Barbados - BRB',
-    'BELARUS': 'Belarus - BLR', 'BELGIUM': 'Belgium - BEL', 'BELIZE': 'Belize - BLZ', 'BENIN': 'Benin - BEN',
-    'BERMUDA': 'Bermuda - BMU', 'BHUTAN': 'Bhutan - BTN', 'BOLIVIA': 'Bolivia - BOL', 'BOSNIA': 'Bosnia - BIH',
-    'BOTSWANA': 'Botswana - BWA', 'BOUVET ISLAND': 'Bouvet Island - BVT', 'BRAZIL': 'Brazil - BRA',
-    'BRITISH INDIAN OCEAN TERRITORY': 'British Indian Ocean Territory - IOT', 'BRUNEI': 'Brunei - BRN',
-    'BULGARIA': 'Bulgaria - BGR', 'BURKINA FASO': 'Burkina Faso - BFA', 'BURUNDI': 'Burundi - BDI',
-    'CAMBODIA': 'Cambodia - KHM', 'CAMEROON': 'Cameroon - CMR', 'CANADA': 'Canada - CAN', 'CAPE VERDE': 'Cape Verde - CPV',
-    'CAYMAN ISLANDS': 'Cayman Islands - CYM', 'CENTRAL AFRICAN REPUBLIC': 'Central African Republic - CAF',
-    'CHAD': 'Chad - TCD', 'CHILE': 'Chile - CHL', 'CHINA': 'Chinese Mainland - CHN',
-    'CHRISTMAS ISLAND': 'Christmas Island - CXR', 'COCOS (KEELING) ISLANDS': 'Cocos Islands - CCK',
-    'COLOMBIA': 'Colombia - COL', 'COMOROS': 'Comoros - COM', 'CONGO, DEM. REP.': 'Congo, Dem. Rep. - COD',
-    'CONGO': 'Congo - COG', 'COOK ISLANDS': 'Cook Islands - COK', 'COSTA RICA': 'Costa Rica - CRI',
-    'CROATIA': 'Croatia - HRV', 'CUBA': 'Cuba - CUB', 'CURAÇAO': 'Curaçao - ANT', 'CYPRUS': 'Cyprus - CYP',
-    'CZECH REPUBLIC': 'Czech Republic - CZE', 'DENMARK': 'Denmark - DNK', 'DJIBOUTI': 'Djibouti - DJI',
-    'DOMINICA': 'Dominica - DMA', 'DOMINICAN REPUBLIC': 'Dominican Republic - DOM', 'ECUADOR': 'Ecuador - ECU',
-    'EGYPT': 'Egypt - EGY', 'EL SALVADOR': 'El Salvador - SLV', 'EQUATORIAL GUINEA': 'Equatorial Guinea - GNQ',
-    'ERITREA': 'Eritrea - ERI', 'ESTONIA': 'Estonia - EST', 'ETHIOPIA': 'Ethiopia - ETH',
-    'FALKLAND ISLANDS (MALVINAS)': 'Falkland Islands (Malvinas) - FLK', 'FAROE ISLANDS': 'Faroe Islands - FRO',
-    'FIJI': 'Fiji - FJI', 'FINLAND': 'Finland - FIN', 'FRANCE': 'France - FRA', 'FRENCH GUIANA': 'French Guiana - GUF',
-    'FRENCH POLYNESIA': 'French Polynesia - PYF', 'FRENCH SOUTHERN TERRITORIES': 'French Southern Territories - ATF',
-    'GABON': 'Gabon - GAB', 'GAMBIA': 'Gambia - GMB', 'GEORGIA': 'Georgia - GEO', 'GERMANY': 'Germany - DEU',
-    'GHANA': 'Ghana - GHA', 'GIBRALTAR': 'Gibraltar - GIB', 'GREECE': 'Greece - GRC', 'GREENLAND': 'Greenland - GRL',
-    'GRENADA': 'Grenada - GRD', 'GUADELOUPE': 'Guadeloupe - GLP', 'GUAM': 'Guam - GUM', 'GUATEMALA': 'Guatemala - GTM',
-    'GUERNSEY': 'Guernsey - GGY', 'GUINEA-BISSAU': 'Guinea-Bissau - GNB', 'GUINEA': 'Guinea - GIN', 'GUYANA': 'Guyana - GUY',
-    'HAITI': 'Haiti - HTI', 'HEARD ISLAND': 'Heard Island - HMD', 'HONDURAS': 'Honduras - HND',
-    'HONG KONG': 'Hong Kong, China - HKG', 'HONG KONG SAR': 'Hong Kong, China - HKG', 'HUNGARY': 'Hungary - HUN',
-    'ICELAND': 'Iceland - ISL', 'INDIA': 'India - IND', 'INDONESIA': 'Indonesia - IDN', 'IRAN': 'Iran - IRN',
-    'IRAQ': 'Iraq - IRQ', 'IRELAND': 'Ireland - IRL', 'ISLE OF MAN': 'Isle of Man - IMN', 'ISRAEL': 'Israel - ISR',
-    'ITALY': 'Italy - ITA', 'IVORY COAST': 'Ivory Coast - CIV', 'JAMAICA': 'Jamaica - JAM', 'JAPAN': 'Japan - JPN',
-    'JERSEY (CHANNEL ISLANDS)': 'Jersey - JEY', 'JORDAN': 'Jordan - JOR', 'KAZAKHSTAN': 'Kazakhstan - KAZ',
-    'KENYA': 'Kenya - KEN', 'KIRIBATI': 'Kiribati - KIR', "KOREA, DEMO PEOPLE'S REP OF": "Korea, Demo People's Rep of - PRK",
-    'KOREA, REPUBLIC OF': 'Korea, Republic of - KOR', 'SOUTH KOREA': 'Korea, Republic of - KOR', 'KUWAIT': 'Kuwait - KWT',
-    'KYRGYZSTAN': 'Kyrgyzstan - KGZ', 'LAOS': 'Laos - LAO', 'LATVIA': 'Latvia - LVA', 'LEBANON': 'Lebanon - LBN',
-    'LESOTHO': 'Lesotho - LSO', 'LIBERIA': 'Liberia - LBR', 'LIBYA': 'Libya - LBY', 'LIECHTENSTEIN': 'Liechtenstein - LIE',
-    'LITHUANIA': 'Lithuania - LTU', 'LUXEMBOURG': 'Luxembourg - LUX', 'MACAO': 'Macao - MAC', 'MACAU': 'Macao - MAC',
-    'MACEDONIA': 'Macedonia - MKD', 'MADAGASCAR': 'Madagascar - MDG', 'MALAWI': 'Malawi - MWI', 'MALAYSIA': 'Malaysia - MYS',
-    'MALDIVES': 'Maldives - MDV', 'MALI': 'Mali - MLI', 'MALTA': 'Malta - MLT', 'MARSHALL ISLANDS': 'Marshall Islands - MHL',
-    'MARTINIQUE': 'Martinique - MTQ', 'MAURITANIA': 'Mauritania - MRT', 'MAURITIUS': 'Mauritius - MUS',
-    'MAYOTTE': 'Mayotte - MYT', 'MEXICO': 'Mexico - MEX', 'MICRONESIA, FED.': 'Micronesia, Fed. - FSM',
-    'MOLDOVA': 'Moldova - MDA', 'MONACO': 'Monaco - MCO', 'MONGOLIA': 'Mongolia - MNG', 'MONTENEGRO': 'Montenegro - MNE',
-    'MONTSERRAT': 'Montserrat - MSR', 'MOROCCO': 'Morocco - MAR', 'MOZAMBIQUE': 'Mozambique - MOZ',
-    'MYANMAR': 'Myanmar - MMR', 'NAMIBIA': 'Namibia - NAM', 'NAURU': 'Nauru - NRU', 'NEPAL': 'Nepal - NPL',
-    'NETHERLANDS': 'Netherlands - NLD', 'NEW CALEDONIA': 'New Caledonia - NCL', 'NEW ZEALAND': 'New Zealand - NZL',
-    'NICARAGUA': 'Nicaragua - NIC', 'NIGERIA': 'Nigeria - NGA', 'NIGER': 'Niger - NER', 'NIUE': 'Niue - NIU',
-    'NORFOLK ISLAND': 'Norfolk Island - NFK', 'NORTHERN MARIANAS': 'Northern Marianas - MNP', 'NORWAY': 'Norway - NOR',
-    'OMAN': 'Oman - OMN', 'PAKISTAN': 'Pakistan - PAK', 'PALAU': 'Palau - PLW', 'PALESTINIAN TERR.': 'Palestinian Terr. - PSE',
-    'PANAMA': 'Panama - PAN', 'PAPUA NEW GUINEA': 'Papua New Guinea - PNG', 'PARAGUAY': 'Paraguay - PRY',
-    'PERU': 'Peru - PER', 'PHILIPPINES': 'Philippines - PHL', 'PITCAIRN': 'Pitcairn - PCN', 'POLAND': 'Poland - POL',
-    'PORTUGAL': 'Portugal - PRT', 'PUERTO RICO': 'Puerto Rico - PRI', 'QATAR': 'Qatar - QAT', 'RÉUNION': 'Réunion - REU',
-    'REUNION': 'Réunion - REU', 'ROMANIA': 'Romania - ROU', 'RUSSIA': 'Russia - RUS', 'RWANDA': 'Rwanda - RWA',
-    'SAINT BARTHÉLEMY': 'Saint Barthélemy - BLM', 'SAINT HELENA': 'Saint Helena - SHN',
-    'SAINT KITTS AND NEVIS': 'Saint Kitts and Nevis - KNA', 'SAINT LUCIA': 'Saint Lucia - LCA',
-    'SAINT MARTIN (FRENCH)': 'Saint Martin (French) - MAF', 'SAINT PIERRE AND MIQUELON': 'Saint Pierre and Miquelon - SPM',
-    'SAINT VINCENT': 'Saint Vincent - VCT', 'SAMOA': 'Samoa - WSM', 'SAN MARINO': 'San Marino - SMR',
-    'SAO TOME & PRINCIPE': 'Sao Tome & Principe - STP', 'SAUDI ARABIA': 'Saudi Arabia - SAU', 'SENEGAL': 'Senegal - SEN',
-    'SERBIA': 'Serbia - SRB', 'SEYCHELLES': 'Seychelles - SYC', 'SIERRA LEONE': 'Sierra Leone - SLE',
-    'SINGAPORE': 'Singapore - SGP', 'SINT MAARTEN (DUTCH)': 'Sint Maarten (Dutch) - ANT', 'SLOVAKIA': 'Slovakia - SVK',
-    'SLOVENIA': 'Slovenia - SVN', 'SOLOMON ISLANDS': 'Solomon Islands - SLB', 'SOMALIA': 'Somalia - SOM',
-    'SOUTH AFRICA': 'South Africa - ZAF', 'SOUTH GEORGIA AND THE SOUTH SANDWICH ISLANDS': 'South Georgia and the South Sandwich Islands - SGS',
-    'SOUTH SUDAN': 'South Sudan - SDN', 'SPAIN': 'Spain - ESP', 'SRI LANKA': 'Sri Lanka - LKA', 'SUDAN': 'Sudan - SDN',
-    'SURINAME': 'Suriname - SUR', 'SVALBARD': 'Svalbard - SJM', 'SWAZILAND': 'Swaziland - SWZ', 'SWEDEN': 'Sweden - SWE',
-    'SWITZERLAND': 'Switzerland - CHE', 'SYRIA': 'Syria - SYR', 'TAIWAN': 'Taiwan - TWN', 'TAJIKISTAN': 'Tajikistan - TJK',
-    'TANZANIA': 'Tanzania - TZA', 'THAILAND': 'Thailand - THA', 'TIMOR-LESTE': 'Timor-Leste - TLS', 'TOGO': 'Togo - TGO',
-    'TOKELAU': 'Tokelau - TKL', 'TONGA': 'Tonga - TON', 'TRINIDAD AND TOBAGO': 'Trinidad and Tobago - TTO',
-    'TUNISIA': 'Tunisia - TUN', 'TURKEY': 'Turkey - TUR', 'TURKMENISTAN': 'Turkmenistan - TKM',
-    'TURKS AND CAICOS': 'Turks and Caicos - TCA', 'TUVALU': 'Tuvalu - TUV', 'U.A.E.': 'U.A.E. - ARE',
-    'UNITED ARAB EMIRATES': 'U.A.E. - ARE', 'UGANDA': 'Uganda - UGA', 'UKRAINE': 'Ukraine - UKR',
-    'UNITED KINGDOM': 'United Kingdom - GBR', 'UNITED STATES MINOR OUTLYING ISLANDS': 'United States Minor Outlying Islands - UMI',
-    'UNITED STATES': 'United States - USA', 'URUGUAY': 'Uruguay - URY', 'UZBEKISTAN': 'Uzbekistan - UZB',
-    'VANUATU': 'Vanuatu - VUT', 'VATICAN CITY': 'Vatican City - VAT', 'VENEZUELA': 'Venezuela - VEN',
-    'VIET NAM': 'Vietnam - VNM', 'VIETNAM': 'Vietnam - VNM', 'VIRGIN ISLANDS, BRITISH': 'Virgin Islands, British - VGB',
+    'VN': 'Vietnam - VNM', 'VIETNAM': 'Vietnam - VNM', 'VIRGIN ISLANDS, BRITISH': 'Virgin Islands, British - VGB',
     'VIRGIN ISLANDS, U.S.': 'Virgin Islands, U.S. - VIR', 'WALLIS AND FUTUNA': 'Wallis and Futuna - WLF',
     'WESTERN SAHARA': 'Western Sahara - ESH', 'YEMEN': 'Yemen - YEM', 'ZAMBIA': 'Zambia - ZMB', 'ZIMBABWE': 'Zimbabwe - ZWE'
 }
@@ -201,8 +121,8 @@ def map_country(val):
                 if clean_out.endswith(f"- {potential_code}"):
                     return proper_out
                     
-    # 6. Fallback 2: If no map is found at all, return the string with spaces
-    return str(val).replace('_', ' ').strip()
+    # 6. Fallback 2: If the country falls completely outside of all rules (e.g. numeric "1" or gibberish), return 'Others'
+    return 'Others'
     
 def clean_phone(val):
     """Strips all non-numeric characters and returns a pure string of digits."""
@@ -216,17 +136,21 @@ def clean_phone(val):
     return cleaned if cleaned else pd.NA
 
 def clean_job_title(val):
-    """Extracts a plausible job title by removing conversational words/company names and caps at 80 chars."""
-    if pd.isna(val) or str(val).strip() == '':
-        return pd.NA
+    """Extracts a plausible job title by removing conversational words/company names and safely caps at 80 chars."""
+    if pd.isna(val):
+        return 'N/A'
         
     title = str(val).strip()
     
+    # Check if the user literally typed forms of "N/A" or left it completely blank
+    if title.lower() in ['', 'na', 'n/a', 'nan', 'none', '-', '.']:
+        return 'N/A'
+        
     # 1. Strip away common conversational filler often dumped into free-form fields
     filler_patterns = [
         r'(?i)^i am (a|an)\s+',
-        r'(?i)^currently (working as )?(a|an)\s+',
-        r'(?i)^working as (a|an)\s+',
+        r'(?i)^currently (working as )?(a|an)?\s*',
+        r'(?i)^working as (a|an)?\s*',
         r'(?i)^my (role|title) is\s+',
         r'(?i)^(role|title):\s*'
     ]
@@ -242,11 +166,17 @@ def clean_job_title(val):
             title = parts[0].strip()
             break # Only apply the most prominent/first matched delimiter to avoid over-chopping
             
-    # 3. Truncate to strictly 80 characters
+    # 3. Truncate strictly to 80 characters (with a smarter slice)
     if len(title) > 80:
-        title = title[:80].strip()
-        
-    return title if title else pd.NA
+        truncated = title[:80]
+        # Instead of chopping words in half (e.g., 'Marketing Manag...'), slice at the last full space
+        if ' ' in truncated:
+            title = truncated.rsplit(' ', 1)[0]
+        else:
+            title = truncated # Fallback if it's one single massive block of 80+ chars
+            
+    # Final check in case the regex stripped everything out
+    return title.strip() if title.strip() else 'N/A'
 
 def load_data(uploaded_file):
     """Robustly load CSV data, forcing all columns to be read as plain text."""
@@ -319,11 +249,10 @@ def process_sf_format(df, event_name, platform_link):
         'companyname': 'Company',
         'phonenumber': 'Phone',
         'workexperience': 'Work Experience',
-        'yearsofworkexperience': 'Work Experience', # Modified
+        'yearsofworkexperience': 'Work Experience',
         'whichregionareyoufrom': 'Country',
         'country': 'Country', 
         'jobtitle': 'Title on Badge'
-        # Removed interested programs and consultation columns
     }
     
     renamed = {}
@@ -338,7 +267,6 @@ def process_sf_format(df, event_name, platform_link):
     # dropping duplicates ensures pandas doesnt get confused by two 'Work Experience' columns
     df = df.loc[:, ~df.columns.duplicated(keep='first')].copy()
     
-    # Updated order (Removed "Years of Work Experience", "Interested Program", and "Interested in Consultation")
     final_order = [
         'First Name', 'Last Name', 'Attendee Email', 'Company', 'Phone',
         'Work Experience', 'Platform Link', 'Country',
@@ -362,8 +290,14 @@ def process_sf_format(df, event_name, platform_link):
             # Re-apply the part-time MBA rule
             df[col] = df[col].apply(lambda x: str(x).replace('part time mba (bi-weekly mode)', 'part time mba ( bi-weekly mode)') if pd.notna(x) else x)
 
-    # Clean and smartly truncate the Title on Badge (80 chars max)
+    # Clean and smartly truncate the Title on Badge (80 chars max). Fallbacks to 'N/A' string.
     df['Title on Badge'] = df['Title on Badge'].apply(clean_job_title)
+
+    # Force missing or blank Company inputs to literally output the string 'N/A'
+    df['Company'] = df['Company'].apply(
+        lambda x: 'N/A' if pd.isna(x) or str(x).strip().lower() in ['', 'na', 'n/a', 'nan', 'none', '-', '.'] 
+        else str(x).strip()
+    )
 
     # Phone numbers: Pure digits
     df['Phone'] = df['Phone'].apply(clean_phone)
