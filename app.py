@@ -177,30 +177,49 @@ def load_data(uploaded_file):
 # ==========================================
 def process_cleaning_fb(df):
     
-    # 📌 target_cols dictates the final column order. 
-    # 'company_name' is strictly positioned immediately after 'job_title'.
+    # 📌 Strict final columns as requested
     target_cols = [
-        'created_time', 'form_name', 'first_name', 'last_name', 'email',
-        'phone_number', 'years_of_work_experience', 'work experience', 'job_title', 'company_name',
-        'i would like to talk to a mba advisor', 'which region are you from?',
-        'which mba program are you interested in?', 'linkedin_profile_link'
+        'created_time', 
+        'form_name', 
+        'first_name', 
+        'last_name', 
+        'email',
+        'phone_number', 
+        'work experience', 
+        'job_title', 
+        'company_name',
+        'which region are you from?', 
+        'linkedin_profile_link'
     ]
+    
     mapping = {normalize_header(c): c for c in target_cols}
     
     renamed = {}
     for col in df.columns:
         norm = normalize_header(col)
+        
+        # Standard matching to the exact list
         if norm in mapping:
             renamed[col] = mapping[norm]
+            
+        # Fallback mappings for alternative names 
         elif norm == 'country': 
             renamed[col] = 'which region are you from?'
+        elif norm == 'yearsofworkexperience':
+            renamed[col] = 'work experience'
             
     df = df.rename(columns=renamed)
     
+    # 📌 Prevent duplicate columns in case the raw file happens to have BOTH
+    # "work experience" AND "years_of_work_experience"
+    df = df.loc[:, ~df.columns.duplicated(keep='first')].copy()
+    
+    # Add any missing target columns
     for col in target_cols:
         if col not in df.columns:
             df[col] = pd.NA
             
+    # Strictly re-order columns to the final list
     df = df[target_cols]
     
     # Text Processing - Force underscore replace on all except protected columns
@@ -216,12 +235,10 @@ def process_cleaning_fb(df):
     if 'created_time' in df.columns:
         df['created_time'] = df['created_time'].apply(lambda d: str(d).split('T')[0] if pd.notna(d) else d)
         
+    # Map countries
     df['which region are you from?'] = df['which region are you from?'].apply(map_country)
     
-    # 📌 Removed "df = df.dropna(axis=1, how='all')" here. 
-    # This prevents Pandas from dropping 'company_name' entirely if all entries are blank, 
-    # strictly keeping your desired final column order intact.
-    
+    # Return dataframe without dropping NA columns (ensures company_name stays where it belongs)
     return df
 
 # ==========================================
