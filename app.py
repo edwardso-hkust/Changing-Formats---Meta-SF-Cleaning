@@ -84,19 +84,15 @@ def map_country(val):
     if pd.isna(val) or str(val).strip() == '':
         return val
         
-    # 1. Clean the string: uppercase, fix underscores and weird dashes
     val_clean = str(val).upper().replace('_', ' ').replace('–', '-').strip()
     
-    # 2. Check for an exact 2-letter code or Full Name match
     if val_clean in MASTER_COUNTRY_MAPPING:
         return MASTER_COUNTRY_MAPPING[val_clean]
         
-    # 3. SNAP-BACK FORMATTING: If it already looks like "MALAYSIA - MYS" but has bad capitalization
     valid_outputs = {v.upper(): v for v in MASTER_COUNTRY_MAPPING.values()}
     if val_clean in valid_outputs:
         return valid_outputs[val_clean]
         
-    # 4. SMART OVERRIDES: Catch messy Facebook formats by checking for keywords
     if 'HONG KONG' in val_clean:
         return 'Hong Kong, China - HKG'
     if 'MACAO' in val_clean or 'MACAU' in val_clean:
@@ -106,47 +102,36 @@ def map_country(val):
     if 'KOREA' in val_clean and 'SOUTH' in val_clean:
         return 'Korea, Republic of - KOR'
         
-    # 5. Fallback 1: Extract 2-letter OR 3-letter code after a dash
     if '-' in val_clean:
         parts = val_clean.split('-')
         potential_code = parts[-1].strip()
         
-        # Check if it's a 2-letter code
         if len(potential_code) == 2 and potential_code in MASTER_COUNTRY_MAPPING:
             return MASTER_COUNTRY_MAPPING[potential_code]
             
-        # Check if it's a 3-letter code (like MYS or GBR)
         if len(potential_code) == 3:
             for clean_out, proper_out in valid_outputs.items():
                 if clean_out.endswith(f"- {potential_code}"):
                     return proper_out
                     
-    # 6. Fallback 2: If the country falls completely outside of all rules (e.g. numeric "1" or gibberish), return 'Others'
     return 'Others'
     
 def clean_phone(val):
     """Strips all non-numeric characters and returns a pure string of digits."""
     if pd.isna(val) or str(val).strip() == '':
         return pd.NA
-        
-    # Strip everything except digits
     cleaned = re.sub(r'\D', '', str(val))
-    
-    # Return the pure string of numbers (no apostrophe!)
     return cleaned if cleaned else pd.NA
 
 def clean_job_title(val):
     """Extracts a plausible job title by removing conversational words/company names and safely caps at 80 chars."""
     if pd.isna(val):
         return 'N/A'
-        
     title = str(val).strip()
     
-    # Check if the user literally typed forms of "N/A" or left it completely blank
     if title.lower() in ['', 'na', 'n/a', 'nan', 'none', '-', '.']:
         return 'N/A'
         
-    # 1. Strip away common conversational filler often dumped into free-form fields
     filler_patterns = [
         r'(?i)^i am (a|an)\s+',
         r'(?i)^currently (working as )?(a|an)?\s*',
@@ -157,25 +142,20 @@ def clean_job_title(val):
     for pattern in filler_patterns:
         title = re.sub(pattern, '', title).strip()
         
-    # 2. Try to drop the company name if they included it, since SF has a separate "Company" column
-    # We split by ' at ', '@', '|', or '(' and keep whatever is before it
     split_delimiters = [r'(?i)\s+at\s+', r'\s*@\s*', r'\s*\|\s*', r'\s*\(']
     for delim in split_delimiters:
         parts = re.split(delim, title)
         if len(parts) > 1 and len(parts[0].strip()) > 0:
             title = parts[0].strip()
-            break # Only apply the most prominent/first matched delimiter to avoid over-chopping
+            break
             
-    # 3. Truncate strictly to 80 characters (with a smarter slice)
     if len(title) > 80:
         truncated = title[:80]
-        # Instead of chopping words in half (e.g., 'Marketing Manag...'), slice at the last full space
         if ' ' in truncated:
             title = truncated.rsplit(' ', 1)[0]
         else:
-            title = truncated # Fallback if it's one single massive block of 80+ chars
+            title = truncated
             
-    # Final check in case the regex stripped everything out
     return title.strip() if title.strip() else 'N/A'
 
 def load_data(uploaded_file):
@@ -185,7 +165,6 @@ def load_data(uploaded_file):
         
     raw_bytes = uploaded_file.getvalue()
     
-    # ADDED: dtype=str forces Pandas to never guess if a phone number is a math equation
     try:
         text = raw_bytes.decode('utf-8')
         return pd.read_csv(io.StringIO(text), sep=None, engine='python', on_bad_lines='skip', dtype=str)
@@ -197,6 +176,9 @@ def load_data(uploaded_file):
 # TASK 1: CLEANING FB LEAD FORM
 # ==========================================
 def process_cleaning_fb(df):
+    
+    # 📌 target_cols dictates the final column order. 
+    # 'company_name' is strictly positioned immediately after 'job_title'.
     target_cols = [
         'created_time', 'form_name', 'first_name', 'last_name', 'email',
         'phone_number', 'years_of_work_experience', 'work experience', 'job_title', 'company_name',
@@ -235,7 +217,11 @@ def process_cleaning_fb(df):
         df['created_time'] = df['created_time'].apply(lambda d: str(d).split('T')[0] if pd.notna(d) else d)
         
     df['which region are you from?'] = df['which region are you from?'].apply(map_country)
-    df = df.dropna(axis=1, how='all')
+    
+    # 📌 Removed "df = df.dropna(axis=1, how='all')" here. 
+    # This prevents Pandas from dropping 'company_name' entirely if all entries are blank, 
+    # strictly keeping your desired final column order intact.
+    
     return df
 
 # ==========================================
@@ -318,7 +304,6 @@ st.write("Upload your raw Meta/Facebook CSV file(s), choose your processing task
 
 task = st.radio("Select Processing Mode:", ("Cleaning FB Lead Form", "Changing FB Lead Form to SF Format"))
 
-# accept_multiple_files=True added here
 uploaded_files = st.file_uploader("Upload Raw Data CSV(s)", type=['csv'], accept_multiple_files=True)
 
 event_name = ""
@@ -329,7 +314,6 @@ if task == "Changing FB Lead Form to SF Format":
     platform_link = st.text_input("Platform Link", placeholder="https://zoom.us/j/12345...")
 
 if st.button("Process Data"):
-    # Checking if the list is empty
     if not uploaded_files:
         st.warning("⚠️ Please upload at least one CSV file first.")
     elif task == "Changing FB Lead Form to SF Format" and (not event_name or not platform_link):
@@ -338,7 +322,6 @@ if st.button("Process Data"):
         try:
             with st.spinner(f"Processing {len(uploaded_files)} file(s)..."):
                 
-                # Loop through all files and store the processed dataframes in a list
                 processed_dfs = []
                 for file in uploaded_files:
                     raw_df = load_data(file)
