@@ -357,7 +357,7 @@ def process_sleekflow_format(uploaded_file, label_value):
 # ==========================================
 st.set_page_config(page_title="Meta Lead Converter", layout="centered")
 
-st.title("📊 Meta Lead Data Processor")
+st.title("📊 Formatting Processor")
 st.write("Upload your raw Meta/Facebook CSV or Excel file(s), choose your processing task, and download the standardized output.")
 
 task = st.radio(
